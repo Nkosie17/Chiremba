@@ -129,6 +129,11 @@ const isStaffOrAdmin = (req, res, next) => {
 
 // API Routes
 
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'healthy', timestamp: new Date().toISOString() });
+});
+
 // Register a new user
 app.post('/api/auth/register', [
   body('email').isEmail().withMessage('Enter a valid email'),
