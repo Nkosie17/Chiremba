@@ -1,11 +1,9 @@
 import axios from 'axios';
 
 // Define the API base URL using environment variable with fallback
-const API_BASE_URL = import.meta.env.PROD 
-  ? '/api' 
-  : import.meta.env.VITE_EXPRESS_API_URL 
-    ? `${import.meta.env.VITE_EXPRESS_API_URL}/api`
-    : `http://${window.location.hostname}:5000/api`;
+const API_BASE_URL = import.meta.env.VITE_EXPRESS_API_URL 
+  ? `${import.meta.env.VITE_EXPRESS_API_URL}/api`
+  : `http://${window.location.hostname}:5000/api`;
 
 // User interface
 export interface User {
