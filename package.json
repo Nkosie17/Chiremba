@@ -5,18 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
-    "build:dev": "vite build --mode development",
-    "lint": "eslint .",
+    "dev:full": "concurrently \"npm run dev\" \"cd server && npm run dev\" \"python src/hostlocal.py\"",
+    "build": "tsc && vite build",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "start": "npm run start:all",
-    "start:all": "concurrently \"npm run start:frontend\" \"npm run start:backend\" \"npm run start:ml\"",
-    "start:frontend": "serve -s dist",
-    "start:backend": "node server/index.js",
-    "start:ml": "cd src && python hostlocal.py",
-    "dev:full": "concurrently \"npm run dev\" \"npm run server\"",
-    "postinstall": "npm run build",
-    "server": "node server/index.js"
+    "start": "node server/index.js",
+    "start:ml": "python src/hostlocal.py",
+    "start:all": "concurrently \"npm run start\" \"npm run start:ml\""
   },
   "dependencies": {
     "@google/generative-ai": "^0.2.1",
