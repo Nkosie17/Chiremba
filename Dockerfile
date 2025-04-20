@@ -1,30 +1,26 @@
-# Use Node.js LTS version
-FROM node:20-slim AS builder
+# Stage 1: Build frontend
+FROM node:20-slim AS frontend-builder
 
-# Set working directory
 WORKDIR /app
 
-# Copy package files
+# Copy package files for frontend
 COPY package*.json ./
-COPY server/package*.json ./server/
 
 # Install dependencies
 RUN npm install
-RUN cd server && npm install
 
-# Copy source code
+# Copy frontend source
 COPY . .
 
-# Build the frontend
+# Build frontend
 RUN npm run build
 
-# Start a new stage for the final image
-FROM python:3.10-slim
+# Stage 2: Build Python backend
+FROM python:3.10-slim AS backend-builder
 
-# Set working directory
 WORKDIR /app
 
-# Install Node.js in the final image
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     curl \
     && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
@@ -34,13 +30,14 @@ RUN apt-get update && apt-get install -y \
 
 # Copy Python requirements and install dependencies
 COPY requirements.txt .
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy built frontend and backend files
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/server ./server
-COPY --from=builder /app/src ./src
-COPY --from=builder /app/package*.json ./
+# Copy backend files
+COPY server ./server
+COPY src/hostlocal.py ./src/hostlocal.py
+
+# Copy built frontend from previous stage
+COPY --from=frontend-builder /app/dist ./dist
 
 # Create start script
 RUN echo '#!/bin/bash\ncd server && node index.js &\ncd /app && python src/hostlocal.py' > /app/start.sh \
