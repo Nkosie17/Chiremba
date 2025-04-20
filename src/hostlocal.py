@@ -29,14 +29,10 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:5173",
-        "http://127.0.0.1:5173",
-        "http://localhost:5174",
-        "http://127.0.0.1:5174",
-        "http://192.168.1.90:5173",
-        "http://192.168.1.90:5174",
-        "http://192.168.1.90:5000",
-        "http://192.168.1.43:5173",
-        "http://192.168.1.43:5174"
+        "http://localhost:5000",
+        "http://localhost:3000",
+        "https://*.railway.app",  # Allow Railway domains
+        os.environ.get("VITE_EXPRESS_API_URL", ""),  # Allow the frontend URL from env
     ],
     allow_credentials=True,
     allow_methods=["*"],
